@@ -47,7 +47,7 @@
 		    center: [30.2715193,-97.7471358],
 		    zoom: 14,
 			zoomControl:true, 
-			maxZoom:19
+			maxZoom:18
 		});
 		var hash = new L.Hash(map);
 		var additional_attrib = 'created w. <a href="https://github.com/geolicious/qgis2leaf" target ="_blank">qgis2leaf</a> by <a href="http://www.geolicious.de" target ="_blank">Geolicious</a> & contributors<br>';
@@ -84,8 +84,8 @@
 					return ({	color: '#ddddd',
 								fillColor: getBlockColor(feature.properties.SUMJobs),
 								weight: 1,
-								opacity: 0.6,
-								fillOpacity: 0.6
+								opacity: 0.7,
+								fillOpacity: 0.5
 							});
 				}
 			});
@@ -173,7 +173,6 @@
 	var baseMaps = {
 		'Stamen Toner': basemap_0,
 		'OSM Standard': basemap_1,
-		'OSM Black & White': basemap_2,
 		'MapQuestOpen Aerial': basemap_3
 	};
 		L.control.layers(baseMaps,{
