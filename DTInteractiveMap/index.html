@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!--
+	Author:   Nathan Brigmon @ Civic Analytics
+    Date:     6/15/2015
+    URL:      This file is located on the Civic Analytics Google Drive
+	Comments: Downtown Austin Business Analysis
+-->
+<html>
+	<head>
+		<title>Downtown Austin Analysis</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+		<link rel="stylesheet" type="text/css" href="css/own_style.css">
+		<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+		<script src="js/leaflet-hash.js"></script>
+		<script src="js/Autolinker.min.js"></script>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	</head>
+	<body>
+		<div id='waiting'>
+ 			<div class="spinner">
+				<div class="rect1"></div>
+			  	<div class="rect2"></div>
+			  	<div class="rect3"></div>
+			  	<div class="rect4"></div>
+			  	<div class="rect5"></div>
+			</div>
+			<h4><span id='loadPercent'>0</span>%<h4>
+	 		<h4>Loading</h4>
+	 		<!-- <h4>Average wait time: 30 seconds</h4> -->
+ 		</div>
+		<div id="map"></div>
+		<div id="infoWindow" class="info legend"></div>
+		<script>
+            var uploadedData = 10;
+            $("#loadPercent").html(uploadedData);
+		</script>
+		<script src="data/downtown_blocks.js"></script>
+		<script type="text/javascript"> 		uploadedData += 50;	 $("#loadPercent").html(uploadedData);		</script>
+		<script>
+		
+				$("div#waiting").fadeOut("slow", function() {
+				    // $(this).remove();
+				});
+		var map = L.map('map', {
+		    center: [30.2715193,-97.7471358],
+		    zoom: 14,
+			zoomControl:true, 
+			maxZoom:19
+		});
+		var hash = new L.Hash(map);
+		var additional_attrib = 'created w. <a href="https://github.com/geolicious/qgis2leaf" target ="_blank">qgis2leaf</a> by <a href="http://www.geolicious.de" target ="_blank">Geolicious</a> & contributors<br>';
+
+		var basemap_0 = L.tileLayer('http://a.tile.stamen.com/toner/{z}/{x}/{y}.png', { 
+			attribution: additional_attrib + 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+		});	
+		var basemap_1 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+			attribution: additional_attrib + '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'});		
+		var basemap_2 = L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', { 
+			attribution: additional_attrib + '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'});
+		var basemap_3 = L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg', { 
+			attribution: additional_attrib + 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>'+
+						' &mdash; Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency'});
+		basemap_2.addTo(map);
+
+
+		function popup_downtown_info(feature, layer) {					
+			var popupContent = '<table>'+
+			'<tr><th scope="row">Block ID</th><td>' + Autolinker.link(String(feature.properties['GEOID'])) + 
+			'<tr><th scope="row">Total Employees:</th><td>' + Autolinker.link(String(feature.properties['NAMELSAD'])) + 
+			'</td></tr><tr><th scope="row">Total Businesses:</th><td>' + Autolinker.link(String(feature.properties['County'])) + 
+			'</td></tr><tr><th scope="row">Top 5 Employers:</th><td>' + Autolinker.link(String(feature.properties['HD01_VD01'])) + 
+			'</td></tr></table>';
+			layer.bindPopup(popupContent);
+		}
+
+		var county_group = new L.featureGroup([]);
+						
+		//labels - shape
+		var exp_downtown_blocks = new L.geoJson(downtown_blocks,{
+			onEachFeature: onEachDowntownBlock,
+			style: function (feature) {
+					return ({	color: '#000',
+								fillColor: '#dddddd',
+								weight: 1,
+								opacity: 0.8,
+								fillOpacity: 0.1
+							});
+				}
+			});
+		
+				function onEachDowntownBlock(feature, layer) {
+				    layer.on({
+				        mouseover: highlightFeature,
+				        mouseout: highlightReset,
+				        click: zoomToFeature
+				    });
+				}
+
+				function zoomToFeature(e) {
+				    map.fitBounds(e.target.getBounds());
+				}
+				function highlightReset(e) {
+				  	$("#infoWindow").css("opacity", 0);
+				    exp_downtown_blocks.resetStyle(e.target);
+
+				}
+				function highlightFeature(e) {
+					var infoWindow = document.getElementById("infoWindow");
+				  	$("#infoWindow").css("opacity", 1);
+				  	infoWindow.innerHTML = '<table>'+
+						'<tr><th scope="row">Block ID</th><td>' + e.target.feature.properties.id  + 
+						'<tr><th scope="row">Total Employees:</th><td>' + e.target.feature.properties.SUMJobs  + 
+						'</td></tr><tr><th scope="row">Total Businesses:</th><td>' + e.target.feature.properties.COUNT  + 
+						'</td></tr><tr><th scope="row">Top 5 Employers:</th><td>' + e.target.feature.properties.HTML_TXT  + 
+						'</td></tr></table>';
+				  
+				    var layer = e.target;
+
+				    layer.setStyle({
+				        weight: 5
+				        // color: '',
+				        // dashArray: '5, 5, 5, 5',
+				        // fillOpacity: 0.7
+				    });
+
+				    if (!L.Browser.ie && !L.Browser.opera) {
+				        layer.bringToFront();
+				    }
+				}
+
+
+
+		var title = new L.Control();
+		title.onAdd = function (map) {
+			this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+			this.update();
+			return this._div;
+		};
+		title.update = function () {
+			this._div.innerHTML = '<img style="float:left" class="civicLogo" src="pictures/logo_web.png" /><div style="float:right">'+
+									'<h2>Downtown Austin Explorer</h2>Employers and Employees'
+		};
+		title.addTo(map);
+		
+		exp_downtown_blocks.addTo(map)
+	
+	var baseMaps = {
+		'Stamen Toner': basemap_0,
+		'OSM Standard': basemap_1,
+		'OSM Black & White': basemap_2,
+		'MapQuestOpen Aerial': basemap_3
+	};
+		L.control.layers(baseMaps,{
+				"Downtown City Blocks <i id='tractN'></i>": exp_downtown_blocks },
+
+				{collapsed:false}).addTo(map);
+		L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);
+
+	</script>
+</body>
+</html>
