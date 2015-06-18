@@ -81,11 +81,11 @@
 		var exp_downtown_blocks = new L.geoJson(downtown_blocks,{
 			onEachFeature: onEachDowntownBlock,
 			style: function (feature) {
-					return ({	color: '#cccccc',
+					return ({	color: '#ddddd',
 								fillColor: getBlockColor(feature.properties.SUMJobs),
 								weight: 1,
-								opacity: 0.8,
-								fillOpacity: 0.8
+								opacity: 0.6,
+								fillOpacity: 0.6
 							});
 				}
 			});
