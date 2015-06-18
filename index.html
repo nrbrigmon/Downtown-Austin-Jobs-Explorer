@@ -62,7 +62,7 @@
 		var basemap_3 = L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg', { 
 			attribution: additional_attrib + 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>'+
 						' &mdash; Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency'});
-		basemap_2.addTo(map);
+		basemap_1.addTo(map);
 
 
 		function popup_downtown_info(feature, layer) {					
@@ -81,15 +81,23 @@
 		var exp_downtown_blocks = new L.geoJson(downtown_blocks,{
 			onEachFeature: onEachDowntownBlock,
 			style: function (feature) {
-					return ({	color: '#000',
-								fillColor: '#dddddd',
+					return ({	color: '#cccccc',
+								fillColor: getBlockColor(feature.properties.SUMJobs),
 								weight: 1,
 								opacity: 0.8,
 								fillOpacity: 0.1
 							});
 				}
 			});
-		
+				function getBlockColor(d) {
+				    return d > 2000 	? '#081E59' :
+				           d > 1000  	? '#225EA8' :
+				           d > 500  	? '#41B7C4' :
+				           d > 100  	? '#C6E8B3' :
+				                      '#ffffd9' ;
+
+				}
+
 				function onEachDowntownBlock(feature, layer) {
 				    layer.on({
 				        mouseover: highlightFeature,
@@ -146,6 +154,22 @@
 		
 		exp_downtown_blocks.addTo(map)
 	
+		/////////////////////////////
+		//legend
+		var legend = L.control({position: 'bottomright'});
+		legend.onAdd = function (map) {
+			var div = L.DomUtil.create('div', 'info legend');
+			div.innerHTML = "<h3>Employees per Block</h3><table>"+
+				"<tr><td><i style='background:#ffffd9'></i> 0 - 100</td></tr>"+
+				"<tr><td><i style='background:#C6E8B3'></i> 100 - 500</td></tr>"+
+				"<tr><td><i style='background:#41B7C4'></i> 500 - 1,000</td></tr>"+
+				"<tr><td><i style='background:#225EA8'></i> 1,000 - 2,000</td></tr>"+
+				"<tr><td><i style='background:#081E59'></i> 2,000 +</td></tr>"+
+				"</table>";
+ 			return div;
+		};
+		legend.addTo(map);
+
 	var baseMaps = {
 		'Stamen Toner': basemap_0,
 		'OSM Standard': basemap_1,
