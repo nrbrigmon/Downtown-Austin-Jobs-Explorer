@@ -81,7 +81,7 @@
 		var exp_downtown_blocks = new L.geoJson(downtown_blocks,{
 			onEachFeature: onEachDowntownBlock,
 			style: function (feature) {
-					return ({	color: '#ddddd',
+					return ({	color: '#222222',
 								fillColor: getBlockColor(feature.properties.SUMJobs),
 								weight: 1,
 								opacity: 0.7,
@@ -128,7 +128,7 @@
 
 				    layer.setStyle({
 				        weight: 5
-				        // color: '',
+				        color: '#111111',
 				        // dashArray: '5, 5, 5, 5',
 				        // fillOpacity: 0.7
 				    });
