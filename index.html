@@ -62,7 +62,7 @@
 		var basemap_3 = L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg', { 
 			attribution: additional_attrib + 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>'+
 						' &mdash; Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency'});
-		basemap_1.addTo(map);
+		basemap_0.addTo(map);
 
 
 		function popup_downtown_info(feature, layer) {					
@@ -81,7 +81,7 @@
 		var exp_downtown_blocks = new L.geoJson(downtown_blocks,{
 			onEachFeature: onEachDowntownBlock,
 			style: function (feature) {
-					return ({	color: '#222222',
+					return ({	color: '#333333',
 								fillColor: getBlockColor(feature.properties.SUMJobs),
 								weight: 1,
 								opacity: 0.7,
@@ -128,7 +128,7 @@
 
 				    layer.setStyle({
 				        weight: 5,
-				        color: '#111111'
+				        color: '#333333'
 				        // dashArray: '5, 5, 5, 5',
 				        // fillOpacity: 0.7
 				    });
