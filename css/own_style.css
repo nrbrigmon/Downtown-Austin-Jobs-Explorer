@@ -79,7 +79,7 @@ th {
  	#infoWindow{
  		left:10px;
  		bottom:42px;
- 		z-index:9999;
+ 		z-index:8999;
  		position:absolute;
  		background-color:white;
 		opacity:0;
