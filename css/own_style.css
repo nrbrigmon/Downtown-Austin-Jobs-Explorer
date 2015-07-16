@@ -38,18 +38,6 @@ th {
 .leaflet-container {
 	background: #fff;
 }
- 	#infoWindow{
- 		left:10px;
- 		bottom:42px;
- 		z-index:99;
- 		position:absolute;
- 		background-color:white;
-		opacity:0;
-	   	transition: opacity .25s ease-in-out;
-	   	-moz-transition: opacity .25s ease-in-out;
-	   	-webkit-transition: opacity .25s ease-in-out;
- 	}
-
 	.leaflet-control-layers-overlays i {
 	    width: 10px;
 	    height: 10px;
